@@ -28,7 +28,7 @@ class QuotaValidator(object):
         return quota_dict.get(self.code, None)
 
     def get_error_message(self, quota_value, **kwargs):
-        return u'Plan validation error'
+        return 'Plan validation error'
 
     def __call__(self, user, quota_dict=None, **kwargs):
         """
@@ -91,7 +91,7 @@ class ModelAttributeValidator(ModelCountValidator):
     def get_error_message(self, quota_value, **kwargs):
         return _('Following %(model_name_plural)s are not in limits: %(objects)s') % {
             'model_name_plural': self.model._meta.verbose_name_plural.title().lower(),
-            'objects': u', '.join(map(lambda o: u'<a href="%s">%s</a>' % (o.get_absolute_url(), six.u(o)),
+            'objects': ', '.join(map(lambda o: '<a href="%s">%s</a>' % (o.get_absolute_url(), six.u(o)),
                                       kwargs['not_valid_objects'])),
         }
 
