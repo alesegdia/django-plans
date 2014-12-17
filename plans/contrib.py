@@ -45,7 +45,7 @@ def send_template_email(recipients, title_template, body_template, context, lang
     if language is not None:
         translation.deactivate()
 
-    email_logger.info(u"Email (%s) sent to %s\nTitle: %s\n%s\n\n" % (language, recipients, title, body))
+    email_logger.info("Email (%s) sent to %s\nTitle: %s\n%s\n\n" % (language, recipients, title, body))
 
 
 def get_user_language(user):
