@@ -30,8 +30,8 @@ def set_default_user_plan(sender, instance, created, **kwargs):
     """
     Creates default plan for the new user but also extending an account for default grace period.
     """
-
-    if created:
+    SET_DEFAULT_USER_PLAN = getattr(settings, 'PLANS_SET_DEFAULT_USER_PLAN', True)
+    if created and SET_DEFAULT_USER_PLAN:
         default_plan = Plan.get_default_plan()
         if default_plan is not None:
             UserPlan.objects.create(user=instance, plan=default_plan, active=False, expire=None)
