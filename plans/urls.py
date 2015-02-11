@@ -3,8 +3,8 @@ from django.conf.urls import patterns, url
 
 from plans.views import CreateOrderView, OrderListView, InvoiceDetailView, AccountActivationView, \
     OrderPaymentReturnView, CurrentPlanView, UpgradePlanView, OrderView, BillingInfoRedirectView, \
-    BillingInfoCreateView, BillingInfoUpdateView, BillingInfoDeleteView, CreateOrderPlanChangeView, ChangePlanView, \
-    PricingView, FakePaymentsView
+    BillingInfoCreateView, BillingInfoUpdateView, BillingInfoDeleteView, CreateOrderPlanCreateView, \
+	CreateOrderPlanChangeView, ChangePlanView, PricingView, FakePaymentsView
 
 urlpatterns = patterns(
     '',
@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r'^account/$', CurrentPlanView.as_view(), name='current_plan'),
     url(r'^account/activation/$', AccountActivationView.as_view(), name='account_activation'),
     url(r'^upgrade/$', UpgradePlanView.as_view(), name='upgrade_plan'),
+    url(r'^order/new/(?P<pk>\d+)/$', CreateOrderPlanCreateView.as_view(), name='create_order_plan_create'),
     url(r'^order/extend/new/(?P<pk>\d+)/$', CreateOrderView.as_view(), name='create_order_plan'),
     url(r'^order/upgrade/new/(?P<pk>\d+)/$', CreateOrderPlanChangeView.as_view(), name='create_order_plan_change'),
     url(r'^change/(?P<pk>\d+)/$', ChangePlanView.as_view(), name='change_plan'),

@@ -1,3 +1,4 @@
+import decimal
 from decimal import Decimal
 
 from django.core.urlresolvers import reverse
@@ -22,6 +23,7 @@ from plans.models import Quota, Invoice
 from plans.signals import order_started
 from plans.validators import plan_validation
 
+from datetime import datetime, timedelta
 
 class AccountActivationView(LoginRequired, TemplateView):
     template_name = 'plans/account_activation.html'
@@ -184,7 +186,7 @@ class CreateOrderView(LoginRequired, CreateView):
         order.amount = amount
         order.currency = self.get_currency()
         country = getattr(billing_info, 'country', None)
-        if not country is None:
+        if country is not None:
             country = country.code
         tax_number = getattr(billing_info, 'tax_number', None)
 
@@ -282,6 +284,42 @@ class CreateOrderView(LoginRequired, CreateView):
         self.object.save()
         order_started.send(sender=self.object)
         return super(ModelFormMixin, self).form_valid(form)
+
+class CreateOrderPlanCreateView(CreateOrderView):
+    template_name = "plans/create_order.html"
+    form_class = CreateOrderForm
+
+    def recalculate(self, amount, billing_info):
+        order  = super(CreateOrderPlanCreateView, self).recalculate(amount, billing_info)
+        # prorate amount computation
+        PRORATE = getattr(settings, 'PLANS_PRORATE', False)
+        if PRORATE:
+            today = datetime.today()
+            try:
+                next_bill = today.replace(month=today.month+1, day=1, hour=0, minute=0, second=0)
+            except ValueError:
+                if today.month == 12:
+                    next_bill = d.replace(year=today.year+1, month=1, day=1)
+
+            first_day_of_month =  today.replace(day=1)
+            month_days = (next_bill -timedelta(days=1)).day
+            delta =  next_bill - today
+            order.amount= (amount*Decimal(delta.days)/month_days).quantize(Decimal('0.01'), decimal.ROUND_UP)
+        return order
+
+    def get_all_context(self):
+        """
+        Retrieves Plan and Pricing for current order creation
+        """
+        self.plan_pricing = get_object_or_404(PlanPricing.objects.all().select_related('plan', 'pricing'),
+                                              Q(pk=self.kwargs['pk']) & Q(plan__available=True) & (
+                                                  Q(plan__customized=self.request.user) | Q(
+                                                      plan__customized__isnull=True)))
+
+
+
+        self.plan = self.plan_pricing.plan
+        self.pricing = self.plan_pricing.pricing
 
 
 class CreateOrderPlanChangeView(CreateOrderView):
