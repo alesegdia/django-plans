@@ -342,7 +342,7 @@ class PlanPricing(models.Model):
 
 class PlanQuotaManager(models.Manager):
     def get_query_set(self):
-        return super(PlanQuotaManager, self).get_query_set().select_related('plan', 'quota')
+        return super(PlanQuotaManager, self).get_queryset().select_related('plan', 'quota')
 
 
 class PlanQuota(models.Model):
