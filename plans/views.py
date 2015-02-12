@@ -18,7 +18,7 @@ from itertools import chain
 from plans.importer import import_name
 from plans.mixins import LoginRequired
 from plans.models import UserPlan, PlanPricing, Plan, Order, BillingInfo
-from plans.forms import CreateOrderForm, BillingInfoForm, FakePaymentsForm
+from plans.forms import CreateOrderForm, BillingInfoWithoutShippingForm, FakePaymentsForm
 from plans.models import Quota, Invoice
 from plans.signals import order_started
 from plans.validators import plan_validation
@@ -425,7 +425,7 @@ class BillingInfoCreateView(LoginRequired, CreateView):
     """
     Creates billing data for user
     """
-    form_class = BillingInfoForm
+    form_class = BillingInfoWithoutShippingForm
     template_name = 'plans/billing_info_create.html'
 
     def form_valid(self, form):
@@ -444,7 +444,7 @@ class BillingInfoUpdateView(LoginRequired, UpdateView):
     Updates billing data for user
     """
     model = BillingInfo
-    form_class = BillingInfoForm
+    form_class = BillingInfoWithoutShippingForm
     template_name = 'plans/billing_info_update.html'
 
     def get_object(self):
