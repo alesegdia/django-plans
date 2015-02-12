@@ -381,6 +381,7 @@ class Order(models.Model):
     plan = models.ForeignKey('Plan', verbose_name=_('plan'), related_name="plan_order")
     pricing = models.ForeignKey('Pricing', blank=True, null=True, verbose_name=_(
         'pricing'))  # if pricing is None the order is upgrade plan, not buy new pricing
+    userplan = models.ForeignKey('UserPlan', blank=True, null=True, db_index=True)
     created = models.DateTimeField(_('created'), db_index=True)
     completed = models.DateTimeField(_('completed'), null=True, blank=True, db_index=True)
     amount = models.DecimalField(_('amount'), max_digits=7, decimal_places=2, db_index=True)
