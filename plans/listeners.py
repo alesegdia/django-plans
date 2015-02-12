@@ -19,12 +19,16 @@ def create_proforma_invoice(sender, instance, created, **kwargs):
 def create_invoice(sender, **kwargs):
     Invoice.create(sender, Invoice.INVOICE_TYPES['INVOICE'])
 
+@receiver(order_completed)
+def create_userplan(sender, **kwargs):
+    print(sender)
+    print(kwargs)
+
 
 @receiver(post_save, sender=Invoice)
 def send_invoice_by_email(sender, instance, created, **kwargs):
     if created:
         instance.send_invoice_by_email()
-
 
 @receiver(post_save, sender=User)
 def set_default_user_plan(sender, instance, created, **kwargs):
