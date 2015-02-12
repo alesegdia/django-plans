@@ -5,6 +5,8 @@ from django.dispatch.dispatcher import receiver
 from plans.models import Order, Invoice, UserPlan, Plan
 from plans.signals import order_completed, activate_user_plan
 
+from datetime import timedelta
+
 @receiver(post_save, sender=Order)
 def create_proforma_invoice(sender, instance, created, **kwargs):
     """
@@ -21,9 +23,19 @@ def create_invoice(sender, **kwargs):
 
 @receiver(order_completed)
 def create_userplan(sender, **kwargs):
-    print(sender)
-    print(kwargs)
+    try:
+        next_bill = sender.created.replace(month=sender.created.month+1, day=1)
+    except ValueError:
+        if today.month == 12:
+            next_bill = sender.created.replace(year=sender.month.year+1, month=1, day=1)
 
+    end_of_month = (next_bill -timedelta(days=1)).date()
+    print('UserPlan creation')
+    userplan = UserPlan.objects.create(user = sender.user, plan_id = sender.plan_id, expire = end_of_month)
+	# TODO mettre à jour l'order avec le userplan_id
+    print('sender.userplan update')
+    sender.userplan = userplan
+    sender.save()
 
 @receiver(post_save, sender=Invoice)
 def send_invoice_by_email(sender, instance, created, **kwargs):
