@@ -138,7 +138,7 @@ class UserPlan(models.Model):
     """
     Currently selected plan for user account.
     """
-    user = models.OneToOneField('auth.User', verbose_name=_('user'))
+    user = models.ForeignKey('auth.User', verbose_name=_('user'))
     plan = models.ForeignKey('Plan', verbose_name=_('plan'))
     expire = models.DateField(_('expire'), default=None, blank=True, null=True, db_index=True)
     active = models.BooleanField(_('active'), default=True, db_index=True)
@@ -421,7 +421,10 @@ class Order(models.Model):
 
     def complete_order(self):
         if self.completed is None:
-            status = self.user.userplan.extend_account(self.plan, self.pricing)
+			# FIXME
+            #status = self.user.userplan.extend_account(self.plan, self.pricing)
+            status = True
+
             self.completed = now()
             if status:
                 self.status = Order.STATUS.COMPLETED
