@@ -46,6 +46,9 @@ class BillingInfoWithoutShippingForm(BillingInfoForm):
         model = BillingInfo
         exclude = ('user', 'shipping_name', 'shipping_street', 'shipping_zipcode', 'shipping_city')
 
+    def __init__(self, *args, **kwargs):
+        super(BillingInfoWithoutShippingForm, self).__init__(*args, **kwargs)
+        self.fields.move_to_end('tax_number')
 
 class FakePaymentsForm(forms.Form):
     status = forms.ChoiceField(choices=Order.STATUS, required=True, label=ugettext('Change order status to'))
