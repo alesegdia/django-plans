@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, RedirectView, CreateView, UpdateView, View
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
@@ -442,6 +442,9 @@ class BillingInfoUpdateView(LoginRequired, UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, _('Billing info has been updated successfuly.'))
+        if 'next' in self.request.GET:
+            return self.request.GET['next']
+
         return reverse('billing_info_update')
 
 
