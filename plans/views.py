@@ -423,6 +423,9 @@ class BillingInfoCreateView(LoginRequired, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, _('Billing info has been updated successfuly.'))
+        if 'next' in self.request.GET:
+            return self.request.GET['next']
+
         return reverse('billing_info_update')
 
 
