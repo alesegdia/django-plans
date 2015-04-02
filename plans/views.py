@@ -23,7 +23,7 @@ from plans.models import Quota, Invoice
 from plans.signals import order_started
 from plans.validators import plan_validation
 
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 
 class AccountActivationView(LoginRequired, TemplateView):
     template_name = 'plans/account_activation.html'
@@ -281,9 +281,9 @@ class CreateOrderPlanCreateView(CreateOrderView):
         # prorate amount computation
         PRORATE = getattr(settings, 'PLANS_PRORATE', False)
         if PRORATE:
-            today = datetime.today()
+            today = date.today()
             try:
-                next_bill = today.replace(month=today.month+1, day=1, hour=0, minute=0, second=0)
+                next_bill = today.replace(month=today.month+1, day=1)
             except ValueError:
                 if today.month == 12:
                     next_bill = d.replace(year=today.year+1, month=1, day=1)
