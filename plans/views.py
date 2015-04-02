@@ -24,6 +24,8 @@ from plans.signals import order_started
 from plans.validators import plan_validation
 
 from datetime import date, timedelta
+from calendar import monthrange
+from dateutil.relativedelta import relativedelta
 
 class AccountActivationView(LoginRequired, TemplateView):
     template_name = 'plans/account_activation.html'
@@ -282,16 +284,15 @@ class CreateOrderPlanCreateView(CreateOrderView):
         PRORATE = getattr(settings, 'PLANS_PRORATE', False)
         if PRORATE:
             today = date.today()
-            try:
-                next_bill = today.replace(month=today.month+1, day=1)
-            except ValueError:
-                if today.month == 12:
-                    next_bill = d.replace(year=today.year+1, month=1, day=1)
 
-            first_day_of_month =  today.replace(day=1)
-            month_days = (next_bill -timedelta(days=1)).day
-            delta =  next_bill - today
-            order.amount= (amount*Decimal(delta.days)/month_days).quantize(Decimal('0.01'), decimal.ROUND_UP)
+            # if this is the last day of the month, the amount is the full (next) month)
+            if today.day == monthrange(today.year, today.month)[1]:
+                order.amount = amount.quantize(Decimal('0.01'))
+            else:
+                delta = (today + relativedelta(months=1)).replace(day=1) - today
+                prorate_raw_amount = amount*Decimal(delta.days)/monthrange(today.year, today.month)[1]
+                order.amount = prorate_raw_amount.quantize(Decimal('0.01'), decimal.ROUND_UP)
+
         return order
 
     def get_all_context(self):
