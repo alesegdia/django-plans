@@ -1,9 +1,14 @@
 # Django settings for example project.
-import os
+import os, sys
 from decimal import Decimal
 from django.conf import global_settings
 
 EMAIL_FROM = "Test <test@server.com>"
+
+SITE_PATH = os.path.abspath(os.path.dirname(__file__))
+PROJECT_PATH = os.path.normpath(os.path.join(SITE_PATH, '..', '..'))
+if PROJECT_PATH not in sys.path:
+    sys.path.insert(0, PROJECT_PATH)
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
