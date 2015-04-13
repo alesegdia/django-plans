@@ -95,7 +95,7 @@ class PlanTableViewBase(PlanTableMixin, ListView):
             queryset = queryset.filter(
                 Q(available=True, visible=True) & (
                     Q(customized=self.request.user) | Q(customized__isnull=True)
-                )
+                ) & Q(plangroup__pk=self.kwargs['pgpk'])
             )
         else:
             queryset = queryset.filter(Q(available=True, visible=True) & Q(customized__isnull=True))
