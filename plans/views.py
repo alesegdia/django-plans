@@ -127,7 +127,7 @@ class CurrentPlanView(LoginRequired, PlanTableViewBase):
     template_name = "plans/current.html"
 
     def get_queryset(self):
-        return Plan.objects.filter(userplan__user=self.request.user).prefetch_related('planpricing_set__pricing',
+        return Plan.objects.filter(Q(plangroup__pk=self.kwargs['pgpk'])&Q(userplan__user=self.request.user)).prefetch_related('planpricing_set__pricing',
                                                                                       'planquota_set__quota')
 
 

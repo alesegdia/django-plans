@@ -9,7 +9,7 @@ from plans.views import CreateOrderView, OrderListView, InvoiceDetailView, Accou
 urlpatterns = patterns(
     '',
     url(r'^pricing/(?P<pgpk>\d+)/$', PricingView.as_view(), name='pricing'),
-    url(r'^account/$', CurrentPlanView.as_view(), name='current_plan'),
+    url(r'^account/(?P<pgpk>\d+)/$', CurrentPlanView.as_view(), name='current_plan'),
     url(r'^account/activation/$', AccountActivationView.as_view(), name='account_activation'),
     url(r'^upgrade/$', UpgradePlanView.as_view(), name='upgrade_plan'),
     url(r'^order/extend/new/(?P<pk>\d+)/$', CreateOrderView.as_view(), name='create_order_plan'),
