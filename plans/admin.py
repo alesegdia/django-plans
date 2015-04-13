@@ -25,8 +25,8 @@ class PlanQuotaInline(admin.TabularInline):
 class PlanPricingInline(admin.TabularInline):
     model = PlanPricing
 
-class ProductBridgeAdmin(OrderedModelAdmin):
-	model = ProductBridge
+class PlanGroupAdmin(OrderedModelAdmin):
+	model = PlanGroup
 
 class QuotaAdmin(OrderedModelAdmin):
     list_display = ('codename', 'name', 'description', 'unit', 'is_boolean', 'move_up_down_links', )
@@ -140,6 +140,6 @@ admin.site.register(Pricing)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(BillingInfo, BillingInfoAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
-admin.site.register(ProductBridge, ProductBridgeAdmin)
+admin.site.register(PlanGroup, PlanGroupAdmin)
 
 

@@ -32,7 +32,7 @@ accounts_logger = logging.getLogger('accounts')
 
 # Create your models here.
 
-class ProductBridge(OrderedModel):
+class PlanGroup(OrderedModel):
 	name = models.CharField(_('name'), max_length=100, null=True, blank=True)
 	slug = models.SlugField(max_length=40)
 
@@ -56,7 +56,7 @@ class Plan(OrderedModel):
     visible = models.BooleanField(_('visible'), default=True, db_index=True, help_text=_('Is visible in current offer'))
     created = models.DateTimeField(_('created'), db_index=True)
     customized = models.ForeignKey('auth.User', null=True, blank=True, verbose_name=_('customized'))
-    productbridge = models.ForeignKey(ProductBridge, null=True, blank=True, verbose_name=_('product bridge'))
+    productbridge = models.ForeignKey(PlanGroup, null=True, blank=True, verbose_name=_('product bridge'))
     quotas = models.ManyToManyField('Quota', through='PlanQuota', verbose_name=_('quotas'))
     url = models.CharField(max_length=200, blank=True, help_text=_(
         'Optional link to page with more information (for clickable pricing table headers)'))
